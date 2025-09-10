@@ -2,7 +2,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axiosInstance from '@/config/axios.config'
 
-export interface Staff {
+export interface Admin {
   id: string
   email: string
   first_name: string
@@ -10,19 +10,19 @@ export interface Staff {
 }
 
 interface AuthState {
-  staff: Staff | null
+  admin: Admin | null
   isAuthReady: boolean
 }
 
 const initialState: AuthState = {
-  staff: null,
+  admin: null,
   isAuthReady: false,
 }
 
-// thunk to fetch current staff
-export const fetchStaff = createAsyncThunk('auth/fetchStaff', async () => {
-  const res = await axiosInstance.get('/staff-auth')
-  return res.data.staff as Staff
+// thunk to fetch current admin
+export const fetchAdmin = createAsyncThunk('auth/fetchAdmin', async () => {
+  const res = await axiosInstance.get('/auth/profile')
+  return res.data.admin as Admin
 })
 
 const authSlice = createSlice({
@@ -30,17 +30,17 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout(state) {
-      state.staff = null
+      state.admin = null
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchStaff.fulfilled, (state, action) => {
-        state.staff = action.payload
+      .addCase(fetchAdmin.fulfilled, (state, action) => {
+        state.admin = action.payload
         state.isAuthReady = true
       })
-      .addCase(fetchStaff.rejected, (state) => {
-        state.staff = null
+      .addCase(fetchAdmin.rejected, (state) => {
+        state.admin = null
         state.isAuthReady = true
       })
   },

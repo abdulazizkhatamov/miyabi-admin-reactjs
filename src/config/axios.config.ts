@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 // Function to fetch CSRF token
 const fetchCsrfToken = async () => {
   try {
-    const response = await axiosInstance.get('/auth/csrf-token')
+    const response = await axiosInstance.get('/csrf')
     // Adjust if your backend returns token in 'token'
     csrfToken = response.data.token
     return csrfToken
@@ -31,7 +31,7 @@ axiosInstance.interceptors.request.use(
     const url = config.url ?? ''
 
     // Don't add CSRF token for safe methods or for CSRF token endpoint itself
-    if (method === 'get' || url.endsWith('/auth/csrf-token')) {
+    if (method === 'get' || url.endsWith('/csrf')) {
       return config
     }
 
@@ -57,7 +57,7 @@ axiosInstance.interceptors.response.use(
     if (
       error.response?.status === 403 && // Forbidden - likely CSRF token invalid
       !originalRequest._retry && // prevent infinite retry loops
-      !originalRequest.url?.endsWith('/auth/csrf-token')
+      !originalRequest.url?.endsWith('/csrf')
     ) {
       originalRequest._retry = true
       try {

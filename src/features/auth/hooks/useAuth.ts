@@ -1,22 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { fetchStaff, logout } from '../store/auth.slice'
+import { fetchAdmin, logout } from '../store/auth.slice'
 import type { AppDispatch, RootState } from '@/app/store'
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { staff, isAuthReady } = useSelector((state: RootState) => state.auth)
+  const { admin, isAuthReady } = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
     if (!isAuthReady) {
-      dispatch(fetchStaff())
+      dispatch(fetchAdmin())
     }
   }, [dispatch, isAuthReady])
 
   return {
-    staff,
+    admin,
     isAuthReady,
-    fetchStaff: () => dispatch(fetchStaff()),
+    fetchAdmin: () => dispatch(fetchAdmin()),
     logout: () => dispatch(logout()),
   }
 }

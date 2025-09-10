@@ -3,7 +3,7 @@ import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 export const Route = createFileRoute('/(auth)')({
   component: RouteComponent,
   beforeLoad: ({ context }) => {
-    if (context.auth.staff) {
+    if (context.auth.admin) {
       throw redirect({ to: '/' })
     }
   },

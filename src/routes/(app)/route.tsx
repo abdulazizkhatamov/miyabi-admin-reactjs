@@ -6,7 +6,7 @@ import { SidebarInset, SidebarProvider } from '@/shared/components/ui/sidebar'
 export const Route = createFileRoute('/(app)')({
   component: RouteComponent,
   beforeLoad: ({ context }) => {
-    if (!context.auth.staff) {
+    if (!context.auth.admin) {
       throw redirect({ to: '/login' })
     }
   },
