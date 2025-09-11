@@ -1,5 +1,9 @@
-import { Formik } from 'formik'
-import * as Yup from 'yup'
+'use client'
+
+import * as React from 'react'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useLogin } from '../hooks/useAuthMutation'
 import { cn } from '@/core/lib/utils'
 import { Button } from '@/shared/components/ui/button'
@@ -11,22 +15,44 @@ import {
   CardTitle,
 } from '@/shared/components/ui/card'
 import { Input } from '@/shared/components/ui/input'
-import { Label } from '@/shared/components/ui/label'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/components/ui/form'
 
-export const SigninSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Please enter a valid email address')
-    .required('Email is required'),
-  password: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+// --- Validation schema ---
+const signinSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 })
+
+type SigninValues = z.infer<typeof signinSchema>
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
   const login = useLogin()
+
+  const form = useForm<SigninValues>({
+    resolver: zodResolver(signinSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  function onSubmit(values: SigninValues) {
+    login.mutate(values)
+  }
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
@@ -37,80 +63,59 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Formik
-            initialValues={{ email: '', password: '' }}
-            validationSchema={SigninSchema}
-            onSubmit={(values) => {
-              login.mutate(values)
-            }}
-          >
-            {({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-            }) => (
-              <form onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-6">
-                  <div className="grid gap-3">
-                    <div className="flex items-center">
-                      <Label htmlFor="email">Email</Label>
-                    </div>
-                    <div className="flex flex-col gap-1">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-6"
+            >
+              {/* Email */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
                       <Input
-                        id="email"
                         type="email"
-                        name="email"
                         placeholder="m@example.com"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.email}
-                        aria-invalid={!!(errors.email && touched.email)}
+                        {...field}
                       />
-                      {errors.email && touched.email && (
-                        <div className="text-red-500 text-sm">
-                          {errors.email}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid gap-3">
-                    <div className="flex items-center">
-                      <Label htmlFor="password">Password</Label>
-                    </div>
-                    <div className="flex flex-col gap-1">
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Password */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
                       <Input
-                        id="password"
                         type="password"
-                        name="password"
                         placeholder="********"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.password}
-                        aria-invalid={!!(errors.password && touched.password)}
+                        {...field}
                       />
-                      {errors.password && touched.password && (
-                        <div className="text-red-500 text-sm">
-                          {errors.password}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={login.isPending}
-                    >
-                      {login.isPending ? 'Processing...' : 'Login'}
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            )}
-          </Formik>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Submit */}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={login.isPending}
+              >
+                {login.isPending ? 'Processing...' : 'Login'}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

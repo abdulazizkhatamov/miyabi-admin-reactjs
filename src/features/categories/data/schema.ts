@@ -1,6 +1,6 @@
 import z from 'zod'
 
-export const schema = z.object({
+export const categorySchema = z.object({
   id: z.string(),
   slug: z.string(),
   name: z.string(),
@@ -9,3 +9,5 @@ export const schema = z.object({
   created_at: z.string(),
   updated_at: z.string(),
 })
+
+export type Category = z.infer<typeof categorySchema>

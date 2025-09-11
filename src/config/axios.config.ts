@@ -7,7 +7,7 @@ let csrfToken: string | null = null
 
 // Create Axios instance
 const axiosInstance = axios.create({
-  baseURL: env.VITE_SERVER_URL,
+  baseURL: env.VITE_SERVER_URL + '/api',
   withCredentials: true, // send cookies with requests
 })
 
