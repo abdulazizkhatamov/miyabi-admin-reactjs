@@ -3,11 +3,11 @@
 import * as React from 'react'
 import {
   flexRender,
+  functionalUpdate,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
@@ -32,11 +32,24 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: Array<ColumnDef<TData, TValue>>
   data: Array<TData>
+  pageCount: number
+  pagination: {
+    pageIndex: number
+    pageSize: number
+  }
+  onPaginationChange: (updater: any) => void
+  onColumnFiltersChange?: (filters: ColumnFiltersState) => void
+  isFetching?: boolean // 👈 new prop
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pageCount,
+  pagination,
+  onPaginationChange,
+  onColumnFiltersChange,
+  isFetching,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -49,20 +62,27 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    pageCount, // backend knows total pages
     state: {
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
+      pagination, // controlled from parent
     },
+    manualPagination: true, // 👈 turn off client slicing
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    onColumnFiltersChange: (updater) => {
+      setColumnFilters(updater)
+      const next = functionalUpdate(updater, columnFilters)
+      onColumnFiltersChange?.(next) // always passes a ColumnFiltersState
+    },
     onColumnVisibilityChange: setColumnVisibility,
+    onPaginationChange, // pass to parent to trigger query refetch
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
@@ -71,23 +91,22 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <div className="overflow-hidden rounded-md border">
+
+      <div className="relative overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -120,7 +139,15 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+
+        {/* 👇 Loader overlay only covers the table box */}
+        {isFetching && (
+          <div className="absolute inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center">
+            <span className="text-sm text-muted-foreground">Loading…</span>
+          </div>
+        )}
       </div>
+
       <DataTablePagination table={table} />
     </div>
   )

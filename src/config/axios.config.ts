@@ -1,5 +1,6 @@
 // src/shared/lib/api.ts
 import axios from 'axios'
+import qs from 'qs' // 👈 install if not yet: npm i qs
 import { env } from '@/config/env.config'
 
 // In-memory storage for CSRF token
@@ -9,6 +10,7 @@ let csrfToken: string | null = null
 const axiosInstance = axios.create({
   baseURL: env.VITE_SERVER_URL + '/api',
   withCredentials: true, // send cookies with requests
+  paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }), // 👈 important
 })
 
 // Function to fetch CSRF token

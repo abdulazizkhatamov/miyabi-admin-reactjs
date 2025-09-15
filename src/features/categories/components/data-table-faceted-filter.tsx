@@ -37,7 +37,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues()
-  const selectedValues = new Set(column?.getFilterValue() as Array<string>)
+  const selectedValues = new Set(column?.getFilterValue() as Array<boolean>)
 
   return (
     <Popover>
@@ -64,13 +64,11 @@ export function DataTableFacetedFilter<TData, TValue>({
                   </Badge>
                 ) : (
                   options
-                    .filter((option) =>
-                      selectedValues.has(option.value.toString()),
-                    )
-                    .map((option) => (
+                    .filter((option) => selectedValues.has(option.value))
+                    .map((option, index) => (
                       <Badge
                         variant="secondary"
-                        key={option.value.toString()}
+                        key={index}
                         className="rounded-sm px-1 font-normal"
                       >
                         {option.label}
@@ -88,16 +86,16 @@ export function DataTableFacetedFilter<TData, TValue>({
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
-              {options.map((option) => {
-                const isSelected = selectedValues.has(option.value.toString())
+              {options.map((option, index) => {
+                const isSelected = selectedValues.has(option.value)
                 return (
                   <CommandItem
-                    key={option.value.toString()}
+                    key={index}
                     onSelect={() => {
                       if (isSelected) {
-                        selectedValues.delete(option.value.toString())
+                        selectedValues.delete(option.value)
                       } else {
-                        selectedValues.add(option.value.toString())
+                        selectedValues.add(option.value)
                       }
                       const filterValues = Array.from(selectedValues)
                       column?.setFilterValue(

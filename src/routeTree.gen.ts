@@ -14,7 +14,8 @@ import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as appIndexRouteImport } from './routes/(app)/index'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appProductsRouteImport } from './routes/(app)/products'
-import { Route as appCategoriesRouteImport } from './routes/(app)/categories'
+import { Route as appCategoriesIndexRouteImport } from './routes/(app)/categories/index'
+import { Route as appCategoriesIdIndexRouteImport } from './routes/(app)/categories/$id/index'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -39,46 +40,55 @@ const appProductsRoute = appProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => appRouteRoute,
 } as any)
-const appCategoriesRoute = appCategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
+const appCategoriesIndexRoute = appCategoriesIndexRouteImport.update({
+  id: '/categories/',
+  path: '/categories/',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const appCategoriesIdIndexRoute = appCategoriesIdIndexRouteImport.update({
+  id: '/categories/$id/',
+  path: '/categories/$id/',
   getParentRoute: () => appRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof appIndexRoute
-  '/categories': typeof appCategoriesRoute
   '/products': typeof appProductsRoute
   '/login': typeof authLoginRoute
+  '/categories': typeof appCategoriesIndexRoute
+  '/categories/$id': typeof appCategoriesIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof appIndexRoute
-  '/categories': typeof appCategoriesRoute
   '/products': typeof appProductsRoute
   '/login': typeof authLoginRoute
+  '/categories': typeof appCategoriesIndexRoute
+  '/categories/$id': typeof appCategoriesIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)': typeof appRouteRouteWithChildren
   '/(auth)': typeof authRouteRouteWithChildren
-  '/(app)/categories': typeof appCategoriesRoute
   '/(app)/products': typeof appProductsRoute
   '/(auth)/login': typeof authLoginRoute
   '/(app)/': typeof appIndexRoute
+  '/(app)/categories/': typeof appCategoriesIndexRoute
+  '/(app)/categories/$id/': typeof appCategoriesIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/categories' | '/products' | '/login'
+  fullPaths: '/' | '/products' | '/login' | '/categories' | '/categories/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/categories' | '/products' | '/login'
+  to: '/' | '/products' | '/login' | '/categories' | '/categories/$id'
   id:
     | '__root__'
     | '/(app)'
     | '/(auth)'
-    | '/(app)/categories'
     | '/(app)/products'
     | '/(auth)/login'
     | '/(app)/'
+    | '/(app)/categories/'
+    | '/(app)/categories/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -123,26 +133,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appProductsRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/categories': {
-      id: '/(app)/categories'
+    '/(app)/categories/': {
+      id: '/(app)/categories/'
       path: '/categories'
       fullPath: '/categories'
-      preLoaderRoute: typeof appCategoriesRouteImport
+      preLoaderRoute: typeof appCategoriesIndexRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/categories/$id/': {
+      id: '/(app)/categories/$id/'
+      path: '/categories/$id'
+      fullPath: '/categories/$id'
+      preLoaderRoute: typeof appCategoriesIdIndexRouteImport
       parentRoute: typeof appRouteRoute
     }
   }
 }
 
 interface appRouteRouteChildren {
-  appCategoriesRoute: typeof appCategoriesRoute
   appProductsRoute: typeof appProductsRoute
   appIndexRoute: typeof appIndexRoute
+  appCategoriesIndexRoute: typeof appCategoriesIndexRoute
+  appCategoriesIdIndexRoute: typeof appCategoriesIdIndexRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
-  appCategoriesRoute: appCategoriesRoute,
   appProductsRoute: appProductsRoute,
   appIndexRoute: appIndexRoute,
+  appCategoriesIndexRoute: appCategoriesIndexRoute,
+  appCategoriesIdIndexRoute: appCategoriesIdIndexRoute,
 }
 
 const appRouteRouteWithChildren = appRouteRoute._addFileChildren(

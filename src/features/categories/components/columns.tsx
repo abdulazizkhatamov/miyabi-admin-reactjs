@@ -1,8 +1,8 @@
 'use client'
 
+import { Link } from '@tanstack/react-router'
 import { statuses } from '../data/data'
 import { DataTableColumnHeader } from '../../../shared/components/data-table-column-header'
-import { DataTableRowActions } from './data-table-row-actions'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { Category } from '../data/schema'
 import { Checkbox } from '@/shared/components/ui/checkbox'
@@ -41,9 +41,11 @@ export const columns: Array<ColumnDef<Category>> = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue('name')}
-          </span>
+          <Link to={'/categories/$id'} params={{ id: row.original.id }}>
+            <span className="max-w-[500px] truncate font-medium hover:underline">
+              {row.getValue('name')}
+            </span>
+          </Link>
         </div>
       )
     },
@@ -74,9 +76,5 @@ export const columns: Array<ColumnDef<Category>> = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
-  },
-  {
-    id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]

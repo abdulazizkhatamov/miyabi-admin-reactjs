@@ -4,7 +4,7 @@ import { X } from 'lucide-react'
 import { statuses } from '../data/data'
 import { DataTableFacetedFilter } from './data-table-faceted-filter'
 import { DataTableViewOptions } from './data-table-view-options'
-import { AddCategoryDrawer } from './add-category-form'
+import { AddCategorySheet } from './add-category-sheet'
 import type { Table } from '@tanstack/react-table'
 
 import { Button } from '@/shared/components/ui/button'
@@ -51,7 +51,7 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <DataTableViewOptions table={table} />
-      <AddCategoryDrawer />
+      <AddCategorySheet />
     </div>
   )
 }

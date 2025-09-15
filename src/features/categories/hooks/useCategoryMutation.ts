@@ -1,6 +1,10 @@
 // src/hooks/useCategoryMutation.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import type {
+  CreateCategoryFormValues,
+  UpdateCategoryFormValues,
+} from '../schema/category.schema'
 import axiosInstance from '@/config/axios.config'
 import { getAxiosErrorMessage } from '@/core/errors/axios.error'
 
@@ -8,10 +12,8 @@ export function useCreateCategory() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data: FormData) => {
-      const res = await axiosInstance.post('/categories', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+    mutationFn: async (data: CreateCategoryFormValues) => {
+      const res = await axiosInstance.post('/categories', data)
       return res.data
     },
     onSuccess: () => {
@@ -34,18 +36,20 @@ export function useUpdateCategory() {
 
   return useMutation({
     // `data` should include FormData and the category id
-    mutationFn: async ({ id, data }: { id: string; data: FormData }) => {
-      const res = await axiosInstance.patch(`/categories/${id}`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: UpdateCategoryFormValues
+    }) => {
+      const res = await axiosInstance.patch(`/categories/${id}`, data)
       return res.data
     },
-    onSuccess: () => {
-      // Refresh categories after update
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-      toast.success('Category updated successfully', {
-        position: 'top-center',
-      })
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] }) // refresh list
+      queryClient.invalidateQueries({ queryKey: ['category', variables.id] }) // refresh detail
+      toast.success('Category updated successfully', { position: 'top-center' })
     },
     onError: (error) => {
       const message = getAxiosErrorMessage(error)
