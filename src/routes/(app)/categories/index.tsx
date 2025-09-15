@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { keepPreviousData, queryOptions, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import type { Category } from '@/features/categories/data/schema'
+import type { Category } from '@/features/categories/schema/category.schema'
 import type { PaginatedResponse } from '@/types/pagination.type'
 import { DataTable } from '@/features/categories/components/data-table'
 import { columns } from '@/features/categories/components/columns'

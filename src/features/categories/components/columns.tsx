@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router'
 import { statuses } from '../data/data'
 import { DataTableColumnHeader } from '../../../shared/components/data-table-column-header'
 import type { ColumnDef } from '@tanstack/react-table'
-import type { Category } from '../data/schema'
+import type { Category } from '../schema/category.schema'
 import { Checkbox } from '@/shared/components/ui/checkbox'
 import { Badge } from '@/shared/components/ui/badge'
 

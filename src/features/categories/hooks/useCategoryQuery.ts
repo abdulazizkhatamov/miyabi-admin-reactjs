@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import type { Category } from '../data/schema'
+import type { Category } from '../schema/category.schema'
 import axiosInstance from '@/config/axios.config'
 
 export const useCategoriesQuery = () => {
