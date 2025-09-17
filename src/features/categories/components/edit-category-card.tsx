@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useQueryClient } from '@tanstack/react-query'
 import { useUpdateCategory } from '../hooks/useCategoryMutation'
 import { updateCategorySchema } from '../schema/category.schema'
 import type {
@@ -40,6 +41,7 @@ interface EditCategoryCardProps {
 }
 
 export function EditCategoryCard({ category }: EditCategoryCardProps) {
+  const queryClient = useQueryClient()
   const updateCategory = useUpdateCategory()
 
   const form = useForm<UpdateCategoryFormValues>({
@@ -52,7 +54,17 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
   })
 
   function onSubmit(values: UpdateCategoryFormValues) {
-    updateCategory.mutate({ id: category.id, data: values })
+    updateCategory.mutate(
+      { id: category.id, data: values },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['categories'] }) // refresh list
+          queryClient.invalidateQueries({
+            queryKey: ['category', category.id],
+          }) // refresh detail
+        },
+      },
+    )
   }
 
   return (

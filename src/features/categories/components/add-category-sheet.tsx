@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { IconPlus } from '@tabler/icons-react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useCreateCategory } from '../hooks/useCategoryMutation'
 import { createCategorySchema } from '../schema/category.schema'
 import type { CreateCategoryFormValues } from '../schema/category.schema'
@@ -30,6 +31,7 @@ import {
 // const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 
 export function AddCategorySheet() {
+  const queryClient = useQueryClient()
   const createCategory = useCreateCategory()
 
   const form = useForm<CreateCategoryFormValues>({
@@ -43,6 +45,7 @@ export function AddCategorySheet() {
   function onSubmit(values: CreateCategoryFormValues) {
     createCategory.mutate(values, {
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['categories'] })
         form.reset()
       },
     })

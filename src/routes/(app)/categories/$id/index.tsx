@@ -43,7 +43,7 @@ function RouteComponent() {
           {/* 👈 uploader button at top-right */}
         </div>
       </div>
-      <ImagesList images={category.images} />
+      <ImagesList images={category.images} entity_id={category.id} />
     </div>
   )
 }

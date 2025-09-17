@@ -1,6 +1,8 @@
 // ImagesList.tsx
 import { useState } from 'react'
 import { IconEye, IconTrash } from '@tabler/icons-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useDeleteImage } from '../hooks/useImageMutation'
 import type { Image } from '../schema/image.schema'
 import { Card, CardContent } from '@/shared/components/ui/card'
 import { Button } from '@/shared/components/ui/button'
@@ -13,9 +15,17 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog'
 
-export default function ImagesList({ images }: { images: Array<Image> }) {
+export default function ImagesList({
+  images,
+  entity_id,
+}: {
+  images: Array<Image>
+  entity_id: string
+}) {
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+  const queryClient = useQueryClient()
+  const deleteMutation = useDeleteImage()
 
   const handleDelete = (id: string) => {
     setDeleteId(id)
@@ -24,7 +34,14 @@ export default function ImagesList({ images }: { images: Array<Image> }) {
 
   const confirmDelete = () => {
     if (deleteId) {
-      console.log('Deleting image:', deleteId)
+      deleteMutation.mutate(
+        { id: deleteId },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['category', entity_id] })
+          },
+        },
+      )
       // TODO: call your delete mutation here
     }
     setOpen(false)
