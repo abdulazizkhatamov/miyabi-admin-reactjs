@@ -12,6 +12,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
+import { LoaderIcon } from 'lucide-react'
 import { DataTablePagination } from '../../../shared/components/data-table-pagination'
 import { DataTableToolbar } from './data-table-toolbar'
 import type {
@@ -137,15 +138,18 @@ export function DataTable<TData, TValue>({
                 </TableCell>
               </TableRow>
             )}
+            {isFetching && (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="absolute inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center"
+                >
+                  <LoaderIcon className="animate-spin w-5 h-5" />
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
-
-        {/* 👇 Loader overlay only covers the table box */}
-        {isFetching && (
-          <div className="absolute inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center">
-            <span className="text-sm text-muted-foreground">Loading…</span>
-          </div>
-        )}
       </div>
 
       <DataTablePagination table={table} />

@@ -136,3 +136,49 @@ code {
     @apply bg-background text-foreground;
   }
 }
+
+/* Swiper overrides styled like shadcn (New York theme) */
+
+/* Navigation arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  color: hsl(var(--foreground));
+  font-size: 1rem; /* smaller arrow size */
+  width: 1.5rem; /* reduce clickable area */
+  height: 1.5rem;
+  opacity: 0.6;
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Position arrows slightly inset */
+.swiper-button-next {
+  right: 0.5rem;
+}
+.swiper-button-prev {
+  left: 0.5rem;
+}
+
+/* Pagination bullets */
+.swiper-pagination-bullet {
+  background-color: hsl(var(--foreground) / 0.3);
+  width: 0.45rem; /* smaller bullet */
+  height: 0.45rem;
+  border-radius: 9999px;
+  margin: 0 4px !important;
+  transition:
+    background-color 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: hsl(var(--foreground));
+  transform: scale(1.1);
+}

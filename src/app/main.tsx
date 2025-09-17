@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 
-import '@/styles.css'
+import '@/shared/styles/styles.css'
 import reportWebVitals from '@/reportWebVitals.ts'
 import Providers from '@/app/providers'
 

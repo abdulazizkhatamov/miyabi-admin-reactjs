@@ -33,17 +33,24 @@ function RouteComponent() {
   if (!category) return <div>Not found</div>
 
   return (
-    <div className="flex flex-col gap-5">
-      <EditCategoryCard category={category} />
-      <Separator />
-      <div>
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Images</h2>
-          <ImageUploaderForm type="category" entity_id={id} />
-          {/* 👈 uploader button at top-right */}
+    <div className="flex flex-col lg:flex-row gap-5">
+      {/* Left side */}
+      <div className="w-full lg:w-2/3">
+        <EditCategoryCard category={category} />
+      </div>
+
+      {/* Right side */}
+      <div className="w-full lg:w-1/3">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Images</h2>
+            <ImageUploaderForm type="category" entity_id={id} />
+            {/* uploader stays at top-right */}
+          </div>
+
+          <ImagesList images={category.images} entity_id={category.id} />
         </div>
       </div>
-      <ImagesList images={category.images} entity_id={category.id} />
     </div>
   )
 }

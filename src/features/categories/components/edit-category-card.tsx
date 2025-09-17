@@ -81,11 +81,7 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
 
       <CardContent>
         <Form {...form}>
-          <form
-            id="edit-category-form"
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
+          <form id="edit-category-form" onSubmit={form.handleSubmit(onSubmit)}>
             {/* Left side (Name + Description) */}
             <div className="space-y-6">
               <FormField
@@ -125,10 +121,7 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
                   </FormItem>
                 )}
               />
-            </div>
 
-            {/* Right side (Status + Submit Button) */}
-            <div className="flex flex-col justify-between space-y-6">
               <FormField
                 control={form.control}
                 name="status"
@@ -159,16 +152,14 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
                 )}
               />
 
-              <div className="flex justify-end md:justify-start pt-2">
-                <Button
-                  type="submit"
-                  form="edit-category-form"
-                  disabled={updateCategory.isPending}
-                  className="px-6 w-full"
-                >
-                  {updateCategory.isPending ? 'Updating...' : 'Update'}
-                </Button>
-              </div>
+              <Button
+                type="submit"
+                form="edit-category-form"
+                disabled={updateCategory.isPending}
+                className="px-6 w-full"
+              >
+                {updateCategory.isPending ? 'Updating...' : 'Update'}
+              </Button>
             </div>
           </form>
         </Form>
