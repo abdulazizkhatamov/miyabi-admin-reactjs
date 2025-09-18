@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IconEye, IconX } from '@tabler/icons-react'
+import { IconEye, IconUpload, IconX } from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCreateImage } from '../hooks/useImageMutation'
 import { Input } from '@/shared/components/ui/input'
@@ -91,7 +91,9 @@ export default function ImageUploaderForm({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Add Image</Button>
+        <Button size={'sm'}>
+          <IconUpload /> Upload
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">

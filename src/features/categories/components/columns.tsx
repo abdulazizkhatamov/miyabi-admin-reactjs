@@ -1,12 +1,9 @@
-'use client'
-
 import { Link } from '@tanstack/react-router'
-import { statuses } from '../data/data'
 import { DataTableColumnHeader } from '../../../shared/components/data-table-column-header'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { Category } from '../schema/category.schema'
 import { Checkbox } from '@/shared/components/ui/checkbox'
-import { Badge } from '@/shared/components/ui/badge'
+import { StatusBadge } from '@/shared/components/status-badge'
 
 export const columns: Array<ColumnDef<Category>> = [
   {
@@ -55,24 +52,7 @@ export const columns: Array<ColumnDef<Category>> = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
-    cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue('status'),
-      )
-
-      if (!status) {
-        return null
-      }
-
-      return (
-        <div className="flex w-[100px] items-center">
-          <Badge variant="outline" className="text-muted-foreground px-1.5">
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />{' '}
-            <span>{status.label}</span>
-          </Badge>
-        </div>
-      )
-    },
+    cell: ({ row }) => <StatusBadge value={row.getValue('status')} />,
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },

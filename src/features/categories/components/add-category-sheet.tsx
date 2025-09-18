@@ -60,9 +60,9 @@ export function AddCategorySheet() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>New Menu Category</SheetTitle>
+          <SheetTitle>Add New Category</SheetTitle>
           <SheetDescription>
-            Add a category name, description and image to keep your menu
+            Enter a category name and description to keep your menu items neatly
             organized.
           </SheetDescription>
         </SheetHeader>

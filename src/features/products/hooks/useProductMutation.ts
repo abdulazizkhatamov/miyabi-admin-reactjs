@@ -1,20 +1,21 @@
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
+
 import type {
-  CreateCategoryFormValues,
-  UpdateCategoryFormValues,
-} from '../schema/category.schema'
+  CreateProductFormValues,
+  UpdateProductFormValues,
+} from '../schema/product.schema'
 import axiosInstance from '@/config/axios.config'
 import { getAxiosErrorMessage } from '@/core/errors/axios.error'
 
-export function useCreateCategory() {
+export function useCreateProduct() {
   return useMutation({
-    mutationFn: async (data: CreateCategoryFormValues) => {
-      const res = await axiosInstance.post('/categories', data)
+    mutationFn: async (data: CreateProductFormValues) => {
+      const res = await axiosInstance.post('/products', data)
       return res.data
     },
     onSuccess: () => {
-      toast.success('Category added successfully', {
+      toast.success('Product added successfully', {
         position: 'top-center',
       })
     },
@@ -27,21 +28,20 @@ export function useCreateCategory() {
   })
 }
 
-export function useUpdateCategory() {
+export function useUpdateProduct() {
   return useMutation({
-    // `data` should include FormData and the category id
     mutationFn: async ({
       id,
       data,
     }: {
       id: string
-      data: UpdateCategoryFormValues
+      data: UpdateProductFormValues
     }) => {
-      const res = await axiosInstance.patch(`/categories/${id}`, data)
+      const res = await axiosInstance.patch(`/products/${id}`, data)
       return res.data
     },
     onSuccess: (_data) => {
-      toast.success('Category updated successfully', { position: 'top-center' })
+      toast.success('Product updated successfully', { position: 'top-center' })
     },
     onError: (error) => {
       const message = getAxiosErrorMessage(error)

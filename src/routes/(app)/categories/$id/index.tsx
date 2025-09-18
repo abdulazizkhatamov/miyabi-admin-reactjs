@@ -5,8 +5,7 @@ import type { Category } from '@/features/categories/schema/category.schema'
 import axiosInstance from '@/config/axios.config'
 import { EditCategoryCard } from '@/features/categories/components/edit-category-card'
 import ImageUploaderForm from '@/features/images/components/uploader'
-import ImagesList from '@/features/images/components/images-list'
-import { Separator } from '@/shared/components/ui/separator'
+import ImagesCarousel from '@/features/images/components/images-carousel'
 
 // --- Query factory for single category ---
 const categoryQuery = (id: string) => ({
@@ -48,7 +47,7 @@ function RouteComponent() {
             {/* uploader stays at top-right */}
           </div>
 
-          <ImagesList images={category.images} entity_id={category.id} />
+          <ImagesCarousel images={category.images} entity_id={category.id} />
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ import {
 import 'react-photo-view/dist/react-photo-view.css'
 import '@/shared/styles/swiper.css'
 
-export default function ImagesList({
+export default function ImagesCarousel({
   images,
   entity_id,
 }: {

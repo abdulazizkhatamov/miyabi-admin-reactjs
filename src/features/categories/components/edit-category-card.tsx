@@ -1,5 +1,6 @@
+// edit-category-card.tsx
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useFormState } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { useUpdateCategory } from '../hooks/useCategoryMutation'
 import { updateCategorySchema } from '../schema/category.schema'
@@ -53,15 +54,30 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
     },
   })
 
+  // Track dirty fields reliably
+  const { dirtyFields } = useFormState({ control: form.control })
+
   function onSubmit(values: UpdateCategoryFormValues) {
+    // Only include fields that are dirty (excluding id)
+    const dirty: Partial<Omit<UpdateCategoryFormValues, 'id'>> = {}
+
+    Object.keys(dirtyFields).forEach((key) => {
+      if (key !== 'id') {
+        // @ts-expect-error safe because keys come from UpdateProductFormValues
+        dirty[key] = values[key]
+      }
+    })
+
     updateCategory.mutate(
-      { id: category.id, data: values },
+      {
+        id: category.id,
+        data: dirty, // only dirty fields
+      },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['categories'] }) // refresh list
-          queryClient.invalidateQueries({
-            queryKey: ['category', category.id],
-          }) // refresh detail
+          queryClient.invalidateQueries({ queryKey: ['categories'] })
+          queryClient.invalidateQueries({ queryKey: ['category', category.id] })
+          form.reset(values) // update baseline for next edits
         },
       },
     )
@@ -82,8 +98,8 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
       <CardContent>
         <Form {...form}>
           <form id="edit-category-form" onSubmit={form.handleSubmit(onSubmit)}>
-            {/* Left side (Name + Description) */}
             <div className="space-y-6">
+              {/* Name */}
               <FormField
                 control={form.control}
                 name="name"
@@ -102,6 +118,7 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
                 )}
               />
 
+              {/* Description */}
               <FormField
                 control={form.control}
                 name="description"
@@ -122,6 +139,7 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
                 )}
               />
 
+              {/* Status */}
               <FormField
                 control={form.control}
                 name="status"
@@ -152,6 +170,7 @@ export function EditCategoryCard({ category }: EditCategoryCardProps) {
                 )}
               />
 
+              {/* Submit */}
               <Button
                 type="submit"
                 form="edit-category-form"

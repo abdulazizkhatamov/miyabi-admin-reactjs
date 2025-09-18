@@ -22,13 +22,13 @@ export const createCategorySchema = z.object({
 })
 
 export const updateCategorySchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
+  name: z.string().min(2, 'Name must be at least 2 characters').optional(),
   description: z
     .string()
     .min(5, 'Description must be at least 5 characters')
     .optional()
     .or(z.literal('')),
-  status: z.boolean(),
+  status: z.boolean().optional(),
 })
 
 export type Category = z.infer<typeof categorySchema>
