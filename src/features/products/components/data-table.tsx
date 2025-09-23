@@ -5,9 +5,6 @@ import {
   flexRender,
   functionalUpdate,
   getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
@@ -63,30 +60,34 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    pageCount, // backend knows total pages
+    pageCount,
     state: {
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
-      pagination, // controlled from parent
+      pagination,
     },
-    manualPagination: true, // 👈 turn off client slicing
+    manualPagination: true, // ✅ server-side pagination
+    manualFiltering: true, // ✅ server-side filtering
+    manualSorting: true, // (optional) if sorting is also backend-driven
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: (updater) => {
       setColumnFilters(updater)
       const next = functionalUpdate(updater, columnFilters)
-      onColumnFiltersChange?.(next) // always passes a ColumnFiltersState
+      onColumnFiltersChange?.(next)
     },
     onColumnVisibilityChange: setColumnVisibility,
-    onPaginationChange, // pass to parent to trigger query refetch
+    onPaginationChange,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    // ❌ remove getFilteredRowModel()
+    // ❌ remove getFacetedRowModel()
+    // ❌ remove getFacetedUniqueValues()
+    // sorting is fine if you want to keep client-side UI sorting,
+    // but usually you’d move that server-side too → keep only if needed
     getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
   return (

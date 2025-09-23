@@ -6,6 +6,7 @@ import type { PaginatedResponse } from '@/types/pagination.type'
 import axiosInstance from '@/config/axios.config'
 import { columns } from '@/features/products/components/columns'
 import { DataTable } from '@/features/products/components/data-table'
+import { useDebounce } from '@/core/hooks/use-debounce'
 
 // query factory so we can pass page + size dynamically
 const productsQuery = (
@@ -31,20 +32,30 @@ export const Route = createFileRoute('/(app)/products/')({
 
 function RouteComponent() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 })
-  const [filters, setFilters] = useState<{ name?: string; status?: string }>({})
+  const [rawFilters, setRawFilters] = useState<{
+    name?: string
+    status?: string
+  }>({})
+
+  // 👇 debounce filters before triggering query
+  const debouncedFilters = useDebounce(rawFilters, 500)
 
   const { data, isFetching } = useQuery({
-    ...productsQuery(pagination.pageIndex + 1, pagination.pageSize, filters),
+    ...productsQuery(
+      pagination.pageIndex + 1,
+      pagination.pageSize,
+      debouncedFilters,
+    ),
     placeholderData: keepPreviousData,
   })
 
-  if (!data) return null // safeguard for very first load
+  if (!data) return null
 
   return (
     <div className="relative">
       <DataTable
         columns={columns}
-        data={data.data} // rows from backend
+        data={data.data} // ✅ only backend data, no local filtering
         pageCount={data.meta.pageCount}
         pagination={pagination}
         onPaginationChange={setPagination}
@@ -53,8 +64,8 @@ function RouteComponent() {
             ?.value as string
           const status = columnFilters.find((f) => f.id === 'status')
             ?.value as string
-          setFilters({ name, status })
-          setPagination((prev) => ({ ...prev, pageIndex: 0 })) // reset to first page
+          setRawFilters({ name, status }) // just update raw filters
+          setPagination((prev) => ({ ...prev, pageIndex: 0 }))
         }}
         isFetching={isFetching}
       />
