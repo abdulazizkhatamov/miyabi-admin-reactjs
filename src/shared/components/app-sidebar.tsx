@@ -4,6 +4,7 @@ import {
   IconCategory,
   IconDashboard,
   IconInnerShadowTop,
+  IconPhotoScan,
   IconSettings,
 } from '@tabler/icons-react'
 
@@ -41,6 +42,11 @@ const data = {
       title: 'Products',
       url: '/products',
       icon: IconBrandProducthunt,
+    },
+    {
+      title: 'Banners',
+      url: '/banners',
+      icon: IconPhotoScan,
     },
   ],
   navSecondary: [

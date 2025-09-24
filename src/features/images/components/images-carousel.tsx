@@ -49,6 +49,8 @@ export default function ImagesCarousel({
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['category', entity_id] })
+            queryClient.invalidateQueries({ queryKey: ['product', entity_id] })
+            queryClient.invalidateQueries({ queryKey: ['banner', entity_id] })
           },
         },
       )

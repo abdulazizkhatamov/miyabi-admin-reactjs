@@ -45,7 +45,7 @@ export default function ImageUploaderForm({
   type,
   entity_id,
 }: {
-  type: 'category' | 'product'
+  type: 'category' | 'product' | 'banner'
   entity_id: string | number
 }) {
   const form = useForm<FormValues>({
@@ -76,6 +76,8 @@ export default function ImageUploaderForm({
     mutation.mutate(formData, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['category', entity_id] })
+        queryClient.invalidateQueries({ queryKey: ['product', entity_id] })
+        queryClient.invalidateQueries({ queryKey: ['banner', entity_id] })
         form.reset()
         setPreviewUrl(null)
         setIsOpen(false) // close dialog after success
